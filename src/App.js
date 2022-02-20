@@ -1,23 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import Video from "./Video";
+import axios from "./axios.js";
+
+// App deployed to vercel
+// https://vercel.com/prasannakoirala58/tiktok-clone/CmBmCHhYqctkehhtGqpdbHRfUXNf
 
 function App() {
+  const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      const response = await axios.get("/v2/posts");
+      setVideos(response.data);
+      console.log(response.data);
+
+      return response;
+    }
+
+    fetchPosts();
+  }, []);
+
+  // console.log(videos);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    // BEM class naming convention
+    <div className="app">
+      <div className="app__videos">
+        {videos.map(({ url, channel, description, song, likes, messages, shares }) => (
+          <Video
+            key={likes}
+            url={url}
+            channel={channel}
+            song={song}
+            likes={likes}
+            messages={messages}
+            description={description}
+            shares={shares}
+          />
+        ))}
+      </div>
     </div>
   );
 }
